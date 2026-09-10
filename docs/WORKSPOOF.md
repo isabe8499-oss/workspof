@@ -31,10 +31,27 @@ interceptar valores em processos dos apps selecionados, sem modificar seus
 APKs nem suas assinaturas. A configuração continua isolada dentro de cada
 usuário Android.
 
-Cobertura atual do módulo: `Build`, tela, Android ID, IMEI/MEID/IMSI/ICCID,
-número de telefone, operadora, MAC Wi‑Fi/Bluetooth, serial, MediaDrm e o
-Advertising ID clássico. GSF ID e App Set ID dependem de APIs internas do
-Google Play Services e não são prometidos para todas as versões.
+O módulo é experimental e ainda não foi validado em aparelho. Existem hooks
+para algumas APIs Java de `Build`, tela, Android ID, IMEI/MEID/IMSI/ICCID,
+número de telefone, operadora, MAC Wi‑Fi/Bluetooth, serial, MediaDrm e
+Advertising ID clássico. Outras APIs, caches ou código nativo podem continuar
+retornando valores reais. GSF ID e App Set ID são apenas armazenados no editor:
+não há hooks implementados para eles. Nenhum identificador físico de modem,
+SIM ou interface de rede é alterado.
+
+## Opção de root nas configurações
+
+Em **Configurações → Spoof do aparelho → Root e LSPosed**, habilite as opções
+de root e toque em **Solicitar / verificar root**. O botão executa apenas
+`su -c 'id -u'`, mediante autorização no gerenciador de root, com limite de
+30 segundos. Não há solicitação automática ao abrir o app.
+
+Essa verificação não instala LSPosed nem confirma que os hooks estão ativos.
+Root sozinho não aplica spoof. Não é necessário NPatch ou reempacotar os apps
+selecionados. Desligar a opção oculta/desabilita a solicitação de root; para
+revogar uma permissão já concedida, use o gerenciador de root. Para desligar
+os hooks, desative a identidade virtual e reabra os apps, ou desative o módulo
+no LSPosed.
 
 Use perfis de teste e identificadores sintéticos. Não use o recurso para se
 passar por outra pessoa ou contornar controles de serviços.
