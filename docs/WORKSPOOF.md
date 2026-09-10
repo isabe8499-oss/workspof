@@ -42,7 +42,8 @@ SIM ou interface de rede é alterado.
 ## Opção de root nas configurações
 
 Em **Configurações → Spoof do aparelho → Root e LSPosed**, habilite as opções
-de root e toque em **Solicitar / verificar root**. O botão executa apenas
+de root e toque em **Solicitar / verificar root**. Depois de uma verificação
+concedida, o estado fica salvo até você desligar a opção. O botão executa apenas
 `su -c 'id -u'`, mediante autorização no gerenciador de root, com limite de
 30 segundos. Não há solicitação automática ao abrir o app.
 
@@ -52,6 +53,15 @@ selecionados. Desligar a opção oculta/desabilita a solicitação de root; para
 revogar uma permissão já concedida, use o gerenciador de root. Para desligar
 os hooks, desative a identidade virtual e reabra os apps, ou desative o módulo
 no LSPosed.
+
+## Apps do Work Profile no LSPosed
+
+O WorkSpoof salva o perfil e os pacotes no usuário Android em que foi aberto.
+Para aplicar em um app com a maleta, abra o WorkSpoof e o LSPosed pelo usuário
+de trabalho. O LSPosed Manager instalado no perfil pessoal pode listar somente
+os pacotes do usuário pessoal; nesse caso, instale/clone o Manager e o módulo
+WorkSpoof no Work Profile e selecione o pacote com a maleta no escopo. Depois
+de salvar, reinicie o processo do app selecionado.
 
 Use perfis de teste e identificadores sintéticos. Não use o recurso para se
 passar por outra pessoa ou contornar controles de serviços.

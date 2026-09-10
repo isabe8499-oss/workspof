@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -32,12 +34,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 private data class TargetApp(val packageName: String, val label: String)
 
@@ -52,6 +56,8 @@ fun SpoofProfileScreen(onBack: () -> Unit) {
     var appSearch by remember { mutableStateOf("") }
     var enabledPackages by remember { mutableStateOf(repository.enabledPackages()) }
     var message by remember { mutableStateOf<String?>(null) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val installedApps = remember {
         @Suppress("DEPRECATION")
         context.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
@@ -85,12 +91,26 @@ fun SpoofProfileScreen(onBack: () -> Unit) {
     }
     fun save() {
         val errors = profile.validate()
-        if (errors.isNotEmpty()) { message = errors.joinToString("\n"); return }
-        repository.save(profile); repository.setEnabled(active); message = "Perfil salvo neste usuário Android"
+        if (errors.isNotEmpty()) {
+            message = errors.joinToString("\n")
+            scope.launch { snackbarHostState.showSnackbar("Não foi possível salvar: ${errors.first()}") }
+            return
+        }
+        runCatching {
+            repository.save(profile)
+            repository.setEnabled(active)
+        }.onSuccess {
+            message = "Perfil salvo neste usuário Android"
+            scope.launch { snackbarHostState.showSnackbar("Perfil WorkSpoof salvo neste usuário") }
+        }.onFailure {
+            message = "Falha ao salvar: ${it.message ?: "erro desconhecido"}"
+            scope.launch { snackbarHostState.showSnackbar("Falha ao salvar o perfil") }
+        }
     }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("WorkSpoof · Perfil do aparelho") }, navigationIcon = { TextButton(onClick = onBack) { Text("Voltar") } }) },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         LazyColumn(
             Modifier.fillMaxSize().padding(padding),
@@ -186,7 +206,7 @@ fun SpoofProfileScreen(onBack: () -> Unit) {
                 item { AdvancedField("App Set ID", profile.appSetId, SpoofFields.APP_SET_ID, profile, ::toggleField, { profile = profile.copy(appSetId = it) }) { profile = profile.randomizeAdvanced().copy(macAddress = profile.macAddress, deviceId = profile.deviceId, imei = profile.imei, meid = profile.meid, imsi = profile.imsi, iccid = profile.iccid, phoneNumber = profile.phoneNumber, advertisingId = profile.advertisingId, gsfId = profile.gsfId, mediaDrmId = profile.mediaDrmId, serial = profile.serial) } }
                 item { AdvancedField("Serial", profile.serial, SpoofFields.SERIAL, profile, ::toggleField, { profile = profile.copy(serial = it) }) { profile = profile.randomizeAdvanced().copy(macAddress = profile.macAddress, deviceId = profile.deviceId, imei = profile.imei, meid = profile.meid, imsi = profile.imsi, iccid = profile.iccid, phoneNumber = profile.phoneNumber, advertisingId = profile.advertisingId, gsfId = profile.gsfId, mediaDrmId = profile.mediaDrmId, appSetId = profile.appSetId) } }
             }
-            item { SectionTitle("Apps deste perfil", "Marque quais apps receberão a identidade virtual. Selecione os mesmos apps no escopo do LSPosed.") }
+            item { SectionTitle("Apps deste perfil", "Marque os apps deste usuário Android. No LSPosed, abra o gerenciador dentro do Work Profile (ícone de maleta) e selecione o mesmo pacote nesse usuário.") }
             item { ProfileField("Buscar app", appSearch, { appSearch = it }) }
             val visibleApps = installedApps.filter { appSearch.isBlank() || it.label.contains(appSearch, true) || it.packageName.contains(appSearch, true) }
             items(visibleApps, key = { it.packageName }) { app ->
@@ -197,7 +217,7 @@ fun SpoofProfileScreen(onBack: () -> Unit) {
                 HorizontalDivider()
             }
             item { Button(onClick = ::save, modifier = Modifier.fillMaxWidth()) { Text("Salvar perfil WorkSpoof") } }
-            item { Text("Módulo experimental, ainda sem teste em aparelho real. GSF ID e App Set ID são somente armazenados: não há hooks implementados para eles. Demais campos também dependem da API usada pelo aplicativo. Não altera o modem, o SIM ou a identidade física do aparelho.", style = MaterialTheme.typography.bodySmall) }
+            item { Text("Módulo experimental, ainda sem teste em aparelho real. O escopo do LSPosed é separado por usuário Android: a seleção pessoal não ativa o app do Work Profile. GSF ID e App Set ID são somente armazenados: não há hooks implementados para eles. Demais campos também dependem da API usada pelo aplicativo. Não altera o modem, o SIM ou a identidade física do aparelho.", style = MaterialTheme.typography.bodySmall) }
             item { Spacer(Modifier.height(24.dp)) }
         }
     }
