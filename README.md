@@ -17,6 +17,12 @@
   <a href="https://github.com/Stem0794/harbor/releases/latest">GitHub Releases</a>
 </p>
 
+> **WorkSpoof** é um fork do Harbor com interface em português do Brasil,
+> configuração de identidade virtual por perfil Android e módulo LSPosed
+> opcional. As funções de perfil de trabalho funcionam sem root. Leia
+> [WORKSPOOF.md](docs/WORKSPOOF.md) para as capacidades e limites do modo sem
+> root e do modo opcional por app.
+
 Harbor is a free and open-source Android work-profile manager. It creates an isolated Work space where apps keep separate data from the Personal side of the phone.
 
 Harbor does **not** require Google Play services, root, an account, analytics, advertising, or the `INTERNET` permission for its core features.

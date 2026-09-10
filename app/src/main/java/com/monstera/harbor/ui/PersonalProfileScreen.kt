@@ -92,9 +92,10 @@ fun PersonalProfileScreen(
     onOpenWorkHarbor: () -> Unit,
     onSendFilesToWork: () -> Unit,
     onAdvanced: () -> Unit,
+    onSpoof: () -> Unit,
 ) {
     var createWorkspace by remember { mutableStateOf(false) }
-    var newWorkspaceName by remember { mutableStateOf("Harbor Lab") }
+    var newWorkspaceName by remember { mutableStateOf("Espaço WorkSpoof") }
     var renameTarget by remember { mutableStateOf<SystemUser?>(null) }
     var alias by remember { mutableStateOf("") }
     var showSettings by remember { mutableStateOf(false) }
@@ -103,26 +104,26 @@ fun PersonalProfileScreen(
     if (createWorkspace) {
         AlertDialog(
             onDismissRequest = { createWorkspace = false },
-            title = { Text("Create workspace") },
+            title = { Text("Criar espaço") },
             text = {
-                OutlinedTextField(value = newWorkspaceName, onValueChange = { newWorkspaceName = it }, label = { Text("Android user name") }, singleLine = true)
+                OutlinedTextField(value = newWorkspaceName, onValueChange = { newWorkspaceName = it }, label = { Text("Nome do usuário Android") }, singleLine = true)
             },
             confirmButton = {
-                TextButton(enabled = !workspaceBusy, onClick = { createWorkspace = false; onCreateWorkspace(newWorkspaceName) }) { Text("Create") }
+                TextButton(enabled = !workspaceBusy, onClick = { createWorkspace = false; onCreateWorkspace(newWorkspaceName) }) { Text("Criar") }
             },
-            dismissButton = { TextButton(onClick = { createWorkspace = false }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { createWorkspace = false }) { Text("Cancelar") } },
         )
     }
 
     renameTarget?.let { user ->
         AlertDialog(
             onDismissRequest = { renameTarget = null },
-            title = { Text("Rename workspace") },
+            title = { Text("Renomear espaço") },
             text = {
-                OutlinedTextField(value = alias, onValueChange = { alias = it }, label = { Text("Harbor-only name") }, supportingText = { Text("This does not rename the Android user") }, singleLine = true)
+                OutlinedTextField(value = alias, onValueChange = { alias = it }, label = { Text("Nome somente do WorkSpoof") }, supportingText = { Text("Isso não altera o usuário Android") }, singleLine = true)
             },
-            confirmButton = { TextButton(onClick = { renameTarget = null; onRenameWorkspace(user, alias) }) { Text("Save") } },
-            dismissButton = { TextButton(onClick = { renameTarget = null }) { Text("Cancel") } },
+            confirmButton = { TextButton(onClick = { renameTarget = null; onRenameWorkspace(user, alias) }) { Text("Salvar") } },
+            dismissButton = { TextButton(onClick = { renameTarget = null }) { Text("Cancelar") } },
         )
     }
 
@@ -131,6 +132,7 @@ fun PersonalProfileScreen(
             sheetState = settingsSheet,
             onDismiss = { showSettings = false },
             onAdvanced = { showSettings = false; onAdvanced() },
+            onSpoof = { showSettings = false; onSpoof() },
         )
     }
 
@@ -151,7 +153,7 @@ fun PersonalProfileScreen(
         containerColor = HarborColors.bgPersonal,
         topBar = {
             HarborHeader(
-                title = "Harbor",
+                title = "WorkSpoof",
                 onAdvanced = onAdvanced,
             )
         },
@@ -251,7 +253,7 @@ private fun Direction2Hero(
             if (primaryAction != null && quickActions.isNotEmpty()) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     HorizontalDivider(Modifier.weight(1f), color = HarborColors.stroke)
-                    Text("or", color = HarborColors.textMuted, style = androidx.compose.material3.MaterialTheme.typography.labelMedium)
+                    Text("ou", color = HarborColors.textMuted, style = androidx.compose.material3.MaterialTheme.typography.labelMedium)
                     HorizontalDivider(Modifier.weight(1f), color = HarborColors.stroke)
                 }
             }
@@ -286,8 +288,8 @@ private fun SecondaryPersonalContent(
 ) {
     Surface(Modifier.fillMaxWidth(), shape = HarborShapes.card, color = HarborColors.surface, border = androidx.compose.foundation.BorderStroke(1.dp, HarborColors.stroke)) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("Your spaces", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold))
-            Text("Personal and Work are separate Android spaces. Harbor only manages profiles it owns.", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium)
+            Text("Seus espaços", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold))
+            Text("Pessoal e Trabalho são espaços Android separados. O WorkSpoof só gerencia perfis próprios.", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium)
             SpaceSummaryRow("Personal", "This Android user")
             SpaceSummaryRow("Work", if (ready) "Ready · managed by Harbor" else "Not set up", if (ready) onOpenWorkHarbor else null)
         }
@@ -295,8 +297,8 @@ private fun SecondaryPersonalContent(
     if (ready) {
         Surface(Modifier.fillMaxWidth(), shape = HarborShapes.card, color = HarborColors.surface, border = androidx.compose.foundation.BorderStroke(1.dp, HarborColors.stroke)) {
             Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("Update Harbor in Work", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
-                Text("Use a browser or Files app inside Work and choose the Harbor icon with the briefcase badge.", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium)
+                Text("Atualizar WorkSpoof no Trabalho", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
+                Text("Use um navegador ou Arquivos dentro do Trabalho e escolha o ícone WorkSpoof com a maleta.", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -304,24 +306,24 @@ private fun SecondaryPersonalContent(
         Surface(Modifier.fillMaxWidth(), shape = HarborShapes.card, color = HarborColors.surface, border = androidx.compose.foundation.BorderStroke(1.dp, HarborColors.stroke)) {
             Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column(Modifier.weight(1f)) { Text("Additional workspaces", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium); Text("Experimental full-user workspaces", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodySmall) }
-                    TextButton(enabled = !workspaceBusy, onClick = onRefreshWorkspaces) { Text("Refresh") }
+                    Column(Modifier.weight(1f)) { Text("Espaços adicionais", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium); Text("Espaços experimentais de usuário completo", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodySmall) }
+                    TextButton(enabled = !workspaceBusy, onClick = onRefreshWorkspaces) { Text("Atualizar") }
                 }
                 workspaceUsers.filter { it.id != workspaceCurrentUserId }.forEach { user ->
                     val metadata = workspaceMetadata.firstOrNull { !it.stale && it.androidUserId == user.id && it.lastKnownSystemName == user.name }
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column(Modifier.weight(1f)) { Text(metadata?.alias ?: user.name, color = HarborColors.textPrimary); Text("Android user · profile state unknown", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodySmall) }
-                        TextButton(enabled = !workspaceBusy, onClick = { onSwitchWorkspace(user) }) { Text("Switch") }
+                        Column(Modifier.weight(1f)) { Text(metadata?.alias ?: user.name, color = HarborColors.textPrimary); Text("Usuário Android · estado do perfil desconhecido", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodySmall) }
+                        TextButton(enabled = !workspaceBusy, onClick = { onSwitchWorkspace(user) }) { Text("Trocar") }
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) { TextButton(enabled = !workspaceBusy, onClick = { onInstallWorkspace(user) }) { Text("Install Harbor") }; TextButton(enabled = !workspaceBusy, onClick = { onRenameWorkspace(user, metadata?.alias) }) { Text("Rename") }; TextButton(enabled = !workspaceBusy, onClick = { val icons = WorkspaceIconKey.entries; val current = metadata?.iconKey ?: WorkspaceIconKey.GENERIC; onChangeWorkspaceIcon(user, icons[(icons.indexOf(current) + 1) % icons.size]) }) { Text("Icon") } }
+                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) { TextButton(enabled = !workspaceBusy, onClick = { onInstallWorkspace(user) }) { Text("Instalar WorkSpoof") }; TextButton(enabled = !workspaceBusy, onClick = { onRenameWorkspace(user, metadata?.alias) }) { Text("Renomear") }; TextButton(enabled = !workspaceBusy, onClick = { val icons = WorkspaceIconKey.entries; val current = metadata?.iconKey ?: WorkspaceIconKey.GENERIC; onChangeWorkspaceIcon(user, icons[(icons.indexOf(current) + 1) % icons.size]) }) { Text("Ícone") } }
                 }
-                if (privilegeState.level != HarborPrivilegeLevel.STANDARD) TextButton(enabled = !workspaceBusy, onClick = onCreateWorkspace) { Text("Create workspace") }
+                if (privilegeState.level != HarborPrivilegeLevel.STANDARD) TextButton(enabled = !workspaceBusy, onClick = onCreateWorkspace) { Text("Criar espaço") }
             }
         }
     }
     workspaceMessage?.let { LocalMessageCard("Workspace update", it) }
     message?.let { LocalMessageCard("Harbor status", it) }
-    Text("Remove a Work profile in Android Settings. This permanently deletes its apps and data.", color = HarborColors.textMuted, style = androidx.compose.material3.MaterialTheme.typography.bodySmall, modifier = Modifier.padding(horizontal = 4.dp))
+    Text("Remova um perfil de Trabalho nos Ajustes do Android. Isso apaga permanentemente seus apps e dados.", color = HarborColors.textMuted, style = androidx.compose.material3.MaterialTheme.typography.bodySmall, modifier = Modifier.padding(horizontal = 4.dp))
 }
 
 @Composable
@@ -339,12 +341,13 @@ private fun LocalMessageCard(title: String, body: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PersonalSettingsSheet(sheetState: SheetState, onDismiss: () -> Unit, onAdvanced: () -> Unit) {
+private fun PersonalSettingsSheet(sheetState: SheetState, onDismiss: () -> Unit, onAdvanced: () -> Unit, onSpoof: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = HarborColors.sheet, dragHandle = { Box(Modifier.padding(top = 10.dp).size(width = 44.dp, height = 4.dp).clip(RoundedCornerShape(50)).background(HarborColors.textSecondary)) }) {
         Column(Modifier.padding(horizontal = 20.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Harbor", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.headlineSmall)
-            Text("Local presentation and help", color = HarborColors.textSecondary)
-            Direction2ActionSheetRow(HarborIconKind.Shield, "Advanced tools", "Optional Shizuku developer tools", onAdvanced)
+            Text("WorkSpoof", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.headlineSmall)
+            Text("Privacidade, perfis e identidade virtual", color = HarborColors.textSecondary)
+            Direction2ActionSheetRow(HarborIconKind.Device, "Spoof do aparelho", "Importar JSON e configurar este perfil", onSpoof)
+            Direction2ActionSheetRow(HarborIconKind.Shield, "Ferramentas avançadas", "Ferramentas opcionais com Shizuku", onAdvanced)
             Direction2InfoSheetRow(HarborIconKind.Device, "Update Harbor", "Install the Work copy from inside the Work profile")
             Direction2InfoSheetRow(HarborIconKind.Lock, "Work-profile guidance", "Remove profiles from Android Settings")
             Spacer(Modifier.height(20.dp))

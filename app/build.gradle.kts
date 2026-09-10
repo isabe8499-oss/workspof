@@ -8,7 +8,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.monstera.harbor"
+        applicationId = "com.workspof.app"
         minSdk = 29
         targetSdk = 36
         versionCode = providers.gradleProperty("harbor.versionCode").get().toInt()
@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":core:topology"))
     implementation(project(":feature:advanced"))
     implementation(project(":privileged:shizuku"))
+    compileOnly(project(":xposed-stubs"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
@@ -68,6 +69,7 @@ dependencies {
     debugImplementation(libs.compose.ui.test.manifest)
 
     testImplementation(libs.junit)
+    testImplementation("org.json:json:20240303")
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.test.runner)

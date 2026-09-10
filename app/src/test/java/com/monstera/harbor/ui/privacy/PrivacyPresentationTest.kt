@@ -18,7 +18,7 @@ class PrivacyPresentationTest {
             provisioningCapability = blockedProvisioning,
         )
 
-        assertEquals("Work space is ready", result.title)
+        assertEquals("Perfil de trabalho pronto", result.title)
         assertEquals(StatusTone.Positive, result.tone)
     }
 
@@ -30,7 +30,7 @@ class PrivacyPresentationTest {
             provisioningCapability = blockedProvisioning,
         )
 
-        assertEquals("Work profile setup is unavailable", result.title)
+        assertEquals("Configuração do perfil de trabalho indisponível", result.title)
         assertEquals(StatusTone.Warning, result.tone)
     }
 
@@ -42,7 +42,7 @@ class PrivacyPresentationTest {
             provisioningCapability = ManagedProfileProvisioningCapability.Allowed,
         )
 
-        assertEquals("Set up your Work space", result.title)
+        assertEquals("Configure seu perfil de trabalho", result.title)
         assertEquals(StatusTone.Neutral, result.tone)
     }
 
@@ -120,7 +120,7 @@ class PrivacyPresentationTest {
     fun appStatusMappingIsExplicitAndNotColorOnly() {
         assertEquals("Frozen", appStatusLabel(app(hidden = true)))
         assertEquals("Read-only", appStatusLabel(app(system = true)))
-        assertEquals("Disabled", appStatusLabel(app(enabled = false)))
+        assertEquals("Desativado", appStatusLabel(app(enabled = false)))
         assertEquals("Available", appStatusLabel(app()))
     }
 

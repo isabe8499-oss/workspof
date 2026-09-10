@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
             setPackage(packageName)
             type = selected.mapNotNull(contentResolver::getType).distinct().singleOrNull() ?: "*/*"
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            clipData = ClipData.newUri(contentResolver, "Harbor file", selected.first()).apply {
+            clipData = ClipData.newUri(contentResolver, "Arquivo WorkSpoof", selected.first()).apply {
                 selected.drop(1).forEach { addItem(ClipData.Item(it)) }
             }
             if (selected.size == 1) {
@@ -119,11 +119,11 @@ class MainActivity : ComponentActivity() {
             }
         }
         runCatching {
-            startActivity(Intent.createChooser(shareIntent, "Send to Harbor work profile"))
+            startActivity(Intent.createChooser(shareIntent, "Enviar ao perfil de trabalho do WorkSpoof"))
         }.onFailure {
             Toast.makeText(
                 this@MainActivity,
-                "Work Harbor is not available as a Share target. Open work Harbor, enable Share, then retry.",
+                "O WorkSpoof do perfil de trabalho não está disponível para compartilhamento. Abra-o, ative Compartilhar e tente novamente.",
                 Toast.LENGTH_LONG,
             ).show()
         }
@@ -168,7 +168,7 @@ class MainActivity : ComponentActivity() {
         }
         val shortcut = ShortcutInfo.Builder(this, shortcutId)
             .setShortLabel(applicationInfo.loadLabel(packageManager).toString().ifBlank { packageName })
-            .setLongLabel("Launch ${applicationInfo.loadLabel(packageManager)}")
+            .setLongLabel("Abrir ${applicationInfo.loadLabel(packageManager)}")
             .setIcon(Icon.createWithBitmap(bitmap))
             .setIntent(
                 Intent(this, ShortcutEntryActivity::class.java)
@@ -179,7 +179,7 @@ class MainActivity : ComponentActivity() {
         if (!requested) {
             graph.preferences.removeShortcut(shortcutId)
         } else {
-            Toast.makeText(this, "Choose where to add the Harbor shortcut", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Escolha onde adicionar o atalho do WorkSpoof", Toast.LENGTH_SHORT).show()
         }
         return requested
     }

@@ -27,6 +27,16 @@
         android:theme="@style/Theme.Harbor"
         android:usesCleartextTraffic="false">
 
+        <meta-data android:name="xposedmodule" android:value="true" />
+        <meta-data android:name="xposeddescription" android:value="WorkSpoof: identidade virtual por perfil Android" />
+        <meta-data android:name="xposedminversion" android:value="93" />
+
+        <provider
+            android:name=".spoof.SpoofConfigProvider"
+            android:authorities="${applicationId}.spoof"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

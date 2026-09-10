@@ -1,6 +1,14 @@
 Harbor
 Copyright 2026 Harbor contributors
 
+WorkSpoof
+Copyright 2026 WorkSpoof contributors
+
+WorkSpoof is a derivative of Harbor and preserves Harbor's Apache License 2.0
+license, notices, and attribution. WorkSpoof adds Brazilian Portuguese UI,
+per-Android-user spoof profiles, JSON import/export, and an optional LSPosed
+runtime module. It is not affiliated with the Harbor maintainers.
+
 Harbor is inspired by Island, Copyright Oasis Feng, licensed under the
 Apache License 2.0. Harbor is a clean implementation; any future source
 adapted from Island must be identified in this file and in the modified source.

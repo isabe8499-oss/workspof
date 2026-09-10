@@ -1,2 +1,4 @@
 -keep class com.monstera.harbor.privileged.shizuku.HarborUserService { public <init>(); public <init>(android.content.Context); }
 -keep class com.monstera.harbor.privileged.shizuku.IHarborUserService$Stub { *; }
+-keep class com.monstera.harbor.spoof.WorkSpoofXposedModule { *; }
+-dontwarn de.robv.android.xposed.**

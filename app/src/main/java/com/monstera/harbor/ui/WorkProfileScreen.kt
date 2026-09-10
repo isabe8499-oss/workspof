@@ -99,6 +99,7 @@ fun WorkProfileScreen(
     onUninstallPackage: (String) -> Unit,
     onAddShortcut: suspend (String) -> Boolean,
     onOpenPersonalHarbor: () -> Boolean,
+    onSpoof: () -> Unit,
 ) {
     val viewModel: WorkAppsViewModel = viewModel(factory = WorkAppsViewModel.Factory(catalog, controller, ownPackage))
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -142,14 +143,14 @@ fun WorkProfileScreen(
             crossProfileAccessBusy = crossProfileAccessBusy,
             onDismiss = { selectedPackage = null },
             onLaunch = {
-                if (!onLaunchPackage(app.packageName.value)) scope.launch { snackbar.showSnackbar("No launchable activity is available") }
+                if (!onLaunchPackage(app.packageName.value)) scope.launch { snackbar.showSnackbar("Não há atividade disponível para abrir") }
                 selectedPackage = null
             },
             onToggleHidden = { viewModel.setApplicationHidden(app.packageName, !app.isHidden) },
             onDetails = { onOpenPackageDetails(app.packageName.value); selectedPackage = null },
             onUninstall = { onUninstallPackage(app.packageName.value); selectedPackage = null },
             onAddShortcut = {
-                scope.launch { if (!onAddShortcut(app.packageName.value)) snackbar.showSnackbar("This launcher cannot pin Harbor shortcuts") }
+                scope.launch { if (!onAddShortcut(app.packageName.value)) snackbar.showSnackbar("Este launcher não pode fixar atalhos") }
                 selectedPackage = null
             },
             onToggleCrossProfileAccess = {
@@ -182,26 +183,26 @@ fun WorkProfileScreen(
             sharingBusy = sharingBusy,
             sharingRequested = sharingRequested,
             onDismiss = { showControls = false },
-            onOpenPersonalHarbor = { if (!onOpenPersonalHarbor()) scope.launch { snackbar.showSnackbar("Open Personal Harbor from the personal profile") }; showControls = false },
+            onOpenPersonalHarbor = { if (!onOpenPersonalHarbor()) scope.launch { snackbar.showSnackbar("Abra o WorkSpoof pessoal no perfil pessoal") }; showControls = false },
             onEnableSharing = {
                 sharingBusy = true
                 scope.launch {
                     when (val result = controller.allowPersonalFileSharing()) {
-                        is PolicyResult.Success -> { sharingRequested = true; snackbar.showSnackbar("Sharing to Harbor is enabled") }
+                        is PolicyResult.Success -> { sharingRequested = true; snackbar.showSnackbar("Compartilhamento para o WorkSpoof ativado") }
                         is PolicyResult.Failure -> snackbar.showSnackbar(result.reason)
                     }
                     sharingBusy = false
                 }
             },
             onAllowApkInstalls = {
-                scope.launch { when (val result = controller.allowApkInstalls()) { is PolicyResult.Success -> snackbar.showSnackbar("APK installs are allowed; retry the APK"); is PolicyResult.Failure -> snackbar.showSnackbar(result.reason) } }
+                scope.launch { when (val result = controller.allowApkInstalls()) { is PolicyResult.Success -> snackbar.showSnackbar("Instalação de APK permitida; tente novamente"); is PolicyResult.Failure -> snackbar.showSnackbar(result.reason) } }
                 showControls = false
             },
             onOpenSettings = { onOpenSystemSettings(); showControls = false },
         )
     }
     if (showNavigation) {
-        WorkNavigationSheet(sheetState = sheetState, onDismiss = { showNavigation = false }, onOpenPersonalHarbor = { if (!onOpenPersonalHarbor()) scope.launch { snackbar.showSnackbar("Open Personal Harbor from the personal profile") }; showNavigation = false }, onAdvanced = { showNavigation = false; onAdvanced() })
+        WorkNavigationSheet(sheetState = sheetState, onDismiss = { showNavigation = false }, onOpenPersonalHarbor = { if (!onOpenPersonalHarbor()) scope.launch { snackbar.showSnackbar("Abra o WorkSpoof pessoal no perfil pessoal") }; showNavigation = false }, onAdvanced = { showNavigation = false; onAdvanced() }, onSpoof = { showNavigation = false; onSpoof() })
     }
 
     Scaffold(
@@ -219,8 +220,8 @@ fun WorkProfileScreen(
                 )
             } else {
                 HarborHeader(
-                    title = "Work space",
-                    subtitle = "Managed by Harbor",
+                    title = "Perfil de trabalho",
+                    subtitle = "Gerenciado pelo WorkSpoof",
                     work = true,
                     onMenu = { showNavigation = true },
                     onOverflow = { showControls = true },
@@ -239,9 +240,9 @@ fun WorkProfileScreen(
                 Row(Modifier.fillMaxWidth().padding(vertical = 3.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(workAppCountLabel(uiState.apps.size, visibleApps.size, uiState.query), color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Medium))
-                        Text(if (uiState.query.isBlank()) "Installed in this Work space" else "Matching apps", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium)
+                        Text(if (uiState.query.isBlank()) "Instalados neste perfil" else "Apps encontrados", color = HarborColors.textSecondary, style = androidx.compose.material3.MaterialTheme.typography.bodyMedium)
                     }
-                    if (!selectionMode) TextButton(onClick = { selectionMode = true }) { Text("Select", color = HarborColors.accent) }
+                    if (!selectionMode) TextButton(onClick = { selectionMode = true }) { Text("Selecionar", color = HarborColors.accent) }
                 }
             }
             if (visibleApps.isEmpty()) {
@@ -269,10 +270,10 @@ private fun SelectionHeader(selectedCount: Int, onExit: () -> Unit, onSelectAll:
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 HarborIconButton(HarborIconKind.Close, "Exit app selection", onExit, tint = HarborColors.textPrimary)
-                Text("$selectedCount selected", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                TextButton(enabled = !busy, onClick = onSelectAll) { Text("All", color = HarborColors.accent) }
-                TextButton(enabled = !busy && selectedCount > 0, onClick = onFreeze) { Text("Freeze", color = HarborColors.accent) }
-                TextButton(enabled = !busy && selectedCount > 0, onClick = onUnfreeze) { Text("Unfreeze", color = HarborColors.accent) }
+                Text("$selectedCount selecionados", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                TextButton(enabled = !busy, onClick = onSelectAll) { Text("Todos", color = HarborColors.accent) }
+                TextButton(enabled = !busy && selectedCount > 0, onClick = onFreeze) { Text("Congelar", color = HarborColors.accent) }
+                TextButton(enabled = !busy && selectedCount > 0, onClick = onUnfreeze) { Text("Descongelar", color = HarborColors.accent) }
             }
         } else {
             Column(Modifier.fillMaxWidth().statusBarsPadding().padding(horizontal = HarborSpacing.screen, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -381,14 +382,15 @@ private fun Direction2ActionRow(icon: HarborIconKind, title: String, body: Strin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WorkNavigationSheet(sheetState: SheetState, onDismiss: () -> Unit, onOpenPersonalHarbor: () -> Unit, onAdvanced: () -> Unit) {
+private fun WorkNavigationSheet(sheetState: SheetState, onDismiss: () -> Unit, onOpenPersonalHarbor: () -> Unit, onAdvanced: () -> Unit, onSpoof: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState, containerColor = HarborColors.sheet, dragHandle = { Box(Modifier.padding(top = 10.dp).size(width = 44.dp, height = 4.dp).clip(RoundedCornerShape(50)).background(HarborColors.textSecondary)) }) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 10.dp)) {
-            Text("Work space", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.headlineSmall)
-            Text("Managed by Harbor · Local catalog", color = HarborColors.textSecondary)
+            Text("Perfil de trabalho", color = HarborColors.textPrimary, style = androidx.compose.material3.MaterialTheme.typography.headlineSmall)
+            Text("Gerenciado pelo WorkSpoof · Catálogo local", color = HarborColors.textSecondary)
             Spacer(Modifier.height(10.dp))
-            Direction2ActionRow(HarborIconKind.Home, "Open Personal Harbor", "Return to the Personal profile", true, onOpenPersonalHarbor)
-            Direction2ActionRow(HarborIconKind.Shield, "Advanced", "Optional Shizuku developer tools", true, onAdvanced)
+            Direction2ActionRow(HarborIconKind.Device, "Spoof do aparelho", "Identidade virtual exclusiva deste perfil", true, onSpoof)
+            Direction2ActionRow(HarborIconKind.Home, "Abrir WorkSpoof pessoal", "Voltar ao perfil pessoal", true, onOpenPersonalHarbor)
+            Direction2ActionRow(HarborIconKind.Shield, "Avançado", "Ferramentas opcionais com Shizuku", true, onAdvanced)
             Spacer(Modifier.height(18.dp))
         }
     }

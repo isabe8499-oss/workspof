@@ -58,42 +58,42 @@ fun workSpacePresentation(
     provisioningCapability: ManagedProfileProvisioningCapability,
 ): WorkSpacePresentation = when {
     harborManagedProfile -> WorkSpacePresentation(
-        title = "Work space is ready",
-        body = "Your work apps and data stay separate from your personal apps.",
+        title = "Perfil de trabalho pronto",
+        body = "Seus apps e dados de trabalho ficam separados dos apps pessoais.",
         tone = StatusTone.Positive,
     )
     foreignProfile && provisioningCapability is ManagedProfileProvisioningCapability.Allowed -> WorkSpacePresentation(
-        title = "Work space setup is available",
-        body = "Another profile exists, but Harbor does not manage it.",
+        title = "Configuração do perfil de trabalho disponível",
+        body = "Já existe outro perfil, mas o WorkSpoof não o gerencia.",
         tone = StatusTone.Warning,
     )
     foreignProfile -> WorkSpacePresentation(
-        title = "Work profile setup is unavailable",
-        body = "Android has another profile and does not currently allow Harbor to create one.",
+        title = "Configuração do perfil de trabalho indisponível",
+        body = "O Android possui outro perfil e não permite que o WorkSpoof crie mais um agora.",
         tone = StatusTone.Warning,
     )
     provisioningCapability is ManagedProfileProvisioningCapability.Allowed -> WorkSpacePresentation(
-        title = "Set up your Work space",
-        body = "Keep selected apps and their data separate from your personal apps.",
+        title = "Configure seu perfil de trabalho",
+        body = "Mantenha os apps escolhidos e seus dados separados dos apps pessoais.",
         tone = StatusTone.Neutral,
     )
     else -> WorkSpacePresentation(
-        title = "Work profile setup is unavailable",
-        body = "Android's current device-management state prevents Harbor from creating its normal Work profile.",
+        title = "Configuração do perfil de trabalho indisponível",
+        body = "O estado atual de gerenciamento do Android impede o WorkSpoof de criar o perfil de trabalho.",
         tone = StatusTone.Warning,
     )
 }
 
 fun privacyFacts(): List<PrivacyFact> = listOf(
-    PrivacyFact("No network permission", "Harbor itself cannot access the internet.", HarborIconKind.Network),
-    PrivacyFact("No analytics", "Harbor does not collect usage or telemetry.", HarborIconKind.Analytics),
-    PrivacyFact("Local only", "Harbor's app catalog and diagnostics stay on this device.", HarborIconKind.Device),
+    PrivacyFact("Sem permissão de rede", "O WorkSpoof não acessa a internet.", HarborIconKind.Network),
+    PrivacyFact("Sem analytics", "O WorkSpoof não coleta uso nem telemetria.", HarborIconKind.Analytics),
+    PrivacyFact("Somente local", "O catálogo e os diagnósticos ficam neste aparelho.", HarborIconKind.Device),
 )
 
 fun appStatusLabel(app: ManagedApp): String = when {
     app.isHidden -> "Frozen"
     app.isSystem -> "Read-only"
-    !app.isEnabled -> "Disabled"
+    !app.isEnabled -> "Desativado"
     else -> "Available"
 }
 

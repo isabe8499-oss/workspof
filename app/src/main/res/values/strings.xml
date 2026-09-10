@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Harbor</string>
-    <string name="admin_description">Controls only the Harbor work profile and its applications.</string>
-    <string name="work_profile_name">Harbor</string>
-    <string name="support_message">Managed locally by Harbor. Harbor does not collect or transmit device data.</string>
-    <string name="import_files_label">Send to Harbor work profile</string>
+    <string name="app_name">WorkSpoof</string>
+    <string name="admin_description">Controla somente o perfil de trabalho do WorkSpoof e seus aplicativos.</string>
+    <string name="work_profile_name">WorkSpoof</string>
+    <string name="support_message">Gerenciado localmente pelo WorkSpoof. O app não coleta nem transmite dados do aparelho.</string>
+    <string name="import_files_label">Enviar ao perfil de trabalho do WorkSpoof</string>
 </resources>

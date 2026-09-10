@@ -26,9 +26,10 @@ import com.monstera.harbor.core.topology.PrivilegedAvailability
 import com.monstera.harbor.core.topology.PrivilegedBackendState
 import com.monstera.harbor.feature.advanced.AdvancedScreen
 import com.monstera.harbor.core.topology.UserVisibleName
+import com.monstera.harbor.spoof.SpoofProfileScreen
 import kotlinx.coroutines.launch
 
-private enum class HarborDestination { HOME, ADVANCED }
+private enum class HarborDestination { HOME, ADVANCED, SPOOF }
 
 @Composable
 fun HarborRoot(
@@ -99,9 +100,9 @@ fun HarborRoot(
     if (showAdvancedConfirmation) {
         AlertDialog(
             onDismissRequest = { showAdvancedConfirmation = false },
-            title = { Text("Enable Advanced tools?") },
+            title = { Text("Ativar ferramentas avançadas?") },
             text = {
-                Text("Advanced tools use an external Shizuku service with ADB or root identity. Harbor restricts operations, but Android and OEM behavior can vary.")
+                Text("As ferramentas avançadas usam o Shizuku com ADB ou root. O WorkSpoof limita as operações, mas o comportamento pode variar conforme Android e fabricante.")
             },
             confirmButton = {
                 TextButton(onClick = {
@@ -110,9 +111,9 @@ fun HarborRoot(
                         graph.preferences.setAdvancedToolsEnabled(true)
                         destination = HarborDestination.ADVANCED
                     }
-                }) { Text("Enable") }
+                }) { Text("Ativar") }
             },
-            dismissButton = { TextButton(onClick = { showAdvancedConfirmation = false }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { showAdvancedConfirmation = false }) { Text("Cancelar") } },
         )
     }
 
@@ -136,6 +137,11 @@ fun HarborRoot(
         return
     }
 
+    if (destination == HarborDestination.SPOOF) {
+        SpoofProfileScreen(onBack = { destination = HarborDestination.HOME })
+        return
+    }
+
     if (profileState.status == WorkProfileStatus.ACTIVE && topology.harborIsProfileOwner) {
         WorkProfileScreen(
             catalog = graph.appCatalog,
@@ -151,6 +157,7 @@ fun HarborRoot(
             onUninstallPackage = onUninstallPackage,
             onAddShortcut = onAddShortcut,
             onOpenPersonalHarbor = onOpenPersonalHarbor,
+            onSpoof = { destination = HarborDestination.SPOOF },
         )
     } else {
         PersonalProfileScreen(
@@ -180,18 +187,19 @@ fun HarborRoot(
                         provisioningCapability = result.capability
                         message = when (result.capability.reason) {
                             com.monstera.harbor.core.policy.ManagedProfileProvisioningBlockReason.ANDROID_MANAGEMENT_STATE ->
-                                "Android's current device-management state prevents Harbor from creating its normal Work profile."
+                                "O estado atual de gerenciamento do Android impede o WorkSpoof de criar o perfil de trabalho."
                             com.monstera.harbor.core.policy.ManagedProfileProvisioningBlockReason.CAPABILITY_CHECK_FAILED ->
-                                "Harbor could not verify that Android currently permits Work profile setup."
+                                "O WorkSpoof não conseguiu verificar se o Android permite criar o perfil de trabalho agora."
                         }
                     }
                 }
             },
             onOpenWorkHarbor = {
-                message = if (onOpenWorkHarbor()) null else "Open the work-badged Harbor icon from your launcher."
+                message = if (onOpenWorkHarbor()) null else "Abra o ícone WorkSpoof com a maleta no seu launcher."
             },
             onSendFilesToWork = onSendFilesToWork,
             onAdvanced = ::openAdvanced,
+            onSpoof = { destination = HarborDestination.SPOOF },
         )
     }
 }

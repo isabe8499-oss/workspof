@@ -67,7 +67,7 @@ internal sealed interface ImportState {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ImportFilesScreen(state: ImportState, onDone: () -> Unit) {
-    Scaffold(topBar = { TopAppBar(title = { Text("Send to Harbor work profile") }) }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text("Enviar ao perfil de trabalho") }) }) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -75,24 +75,24 @@ private fun ImportFilesScreen(state: ImportState, onDone: () -> Unit) {
             when (state) {
                 ImportState.Loading -> {
                     CircularProgressIndicator()
-                    Text("Copying the selected file into this work profile…")
+                    Text("Copiando o arquivo selecionado para este perfil de trabalho…")
                 }
 
                 is ImportState.Success -> {
-                    Text("File copied to work Downloads", style = MaterialTheme.typography.headlineSmall)
+                    Text("Arquivo copiado para Downloads do perfil de trabalho", style = MaterialTheme.typography.headlineSmall)
                     Text(
-                        "The personal original was not deleted. Open the work-profile Files app and look in Downloads/Harbor.",
+                        "O original pessoal não foi apagado. Abra o app Arquivos do perfil de trabalho e veja Downloads/WorkSpoof.",
                     )
                     state.names.forEach { name ->
                         Text(name, style = MaterialTheme.typography.bodySmall)
                     }
-                    Button(onClick = onDone, modifier = Modifier.fillMaxWidth()) { Text("Done") }
+                    Button(onClick = onDone, modifier = Modifier.fillMaxWidth()) { Text("Concluído") }
                 }
 
                 is ImportState.Failure -> {
-                    Text("File was not copied", style = MaterialTheme.typography.headlineSmall)
+                    Text("O arquivo não foi copiado", style = MaterialTheme.typography.headlineSmall)
                     Text(state.message)
-                    Button(onClick = onDone, modifier = Modifier.fillMaxWidth()) { Text("Close") }
+                    Button(onClick = onDone, modifier = Modifier.fillMaxWidth()) { Text("Fechar") }
                 }
             }
         }
@@ -104,7 +104,7 @@ internal class SharedFileImporter(private val resolver: ContentResolver) {
         val uris = sharedUris(intent)
         if (uris.isEmpty()) {
             return ImportState.Failure(
-                "No content URI was received. From the personal profile, use Share and select Harbor with the work badge.",
+                "Nenhum arquivo foi recebido. No perfil pessoal, use Compartilhar e selecione WorkSpoof com a maleta.",
             )
         }
 
@@ -133,7 +133,7 @@ internal class SharedFileImporter(private val resolver: ContentResolver) {
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)
             put(MediaStore.MediaColumns.MIME_TYPE, resolver.getType(uri) ?: sharedMimeType ?: "application/octet-stream")
-            put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/Harbor")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_DOWNLOADS}/WorkSpoof")
             put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
         val destination = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
@@ -142,7 +142,7 @@ internal class SharedFileImporter(private val resolver: ContentResolver) {
             resolver.openInputStream(uri)?.use { input ->
                 resolver.openOutputStream(destination)?.use { output -> input.copyTo(output) }
                     ?: error("Android could not open the work-profile destination")
-            } ?: error("The source app did not grant Harbor access to the file")
+            } ?: error("O app de origem não concedeu acesso ao arquivo")
             resolver.update(
                 destination,
                 ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) },
@@ -169,7 +169,7 @@ internal class SharedFileImporter(private val resolver: ContentResolver) {
             .trim()
             .take(MAX_NAME_LENGTH)
             .ifBlank { "shared-file-${index + 1}" }
-        return "Harbor-${System.currentTimeMillis()}-$safe"
+        return "WorkSpoof-${System.currentTimeMillis()}-$safe"
     }
 
     private fun sharedUris(intent: Intent): List<Uri> {

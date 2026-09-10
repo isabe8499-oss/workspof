@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Harbor"
+rootProject.name = "WorkSpoof"
 
 include(
     ":app",
@@ -23,4 +23,5 @@ include(
     ":core:topology",
     ":feature:advanced",
     ":privileged:shizuku",
+    ":xposed-stubs",
 )
