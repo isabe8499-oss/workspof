@@ -23,6 +23,14 @@ O Android já separa os dados de cada usuário/perfil, e o Android ID é escopad
 por usuário e assinatura desde Android 8. Isso fornece isolamento real mesmo
 sem root, mas não equivale a substituir identificadores de hardware.
 
+## O que o Work Profile não esconde
+
+O Work Profile é uma separação de dados e aplicativos, não uma camada de
+anonimato contra o próprio sistema. Um app dentro dele ainda pode consultar ou
+inferir sinais de root, Magisk, bootloader desbloqueado, hooks Xposed/LSPosed,
+Play Integrity e estado do dispositivo. O módulo WorkSpoof não remove esses
+sinais e não promete passar por verificações anti-root ou anti-hook.
+
 ## Aplicação opcional por app
 
 O APK também contém um módulo LSPosed opcional. Quando o usuário instala e

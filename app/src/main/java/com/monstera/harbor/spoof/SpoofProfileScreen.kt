@@ -217,7 +217,7 @@ fun SpoofProfileScreen(onBack: () -> Unit) {
                 HorizontalDivider()
             }
             item { Button(onClick = ::save, modifier = Modifier.fillMaxWidth()) { Text("Salvar perfil WorkSpoof") } }
-            item { Text("Módulo experimental, ainda sem teste em aparelho real. O escopo do LSPosed é separado por usuário Android: a seleção pessoal não ativa o app do Work Profile. GSF ID e App Set ID são somente armazenados: não há hooks implementados para eles. Demais campos também dependem da API usada pelo aplicativo. Não altera o modem, o SIM ou a identidade física do aparelho.", style = MaterialTheme.typography.bodySmall) }
+            item { Text("Módulo experimental, ainda sem teste em aparelho real. O Work Profile separa dados, mas não mascara root, Magisk, LSPosed ou Play Integrity. O escopo do LSPosed é separado por usuário Android: a seleção pessoal não ativa o app do Work Profile. GSF ID e App Set ID são somente armazenados: não há hooks implementados para eles. Demais campos também dependem da API usada pelo aplicativo. Não altera o modem, o SIM ou a identidade física do aparelho.", style = MaterialTheme.typography.bodySmall) }
             item { Spacer(Modifier.height(24.dp)) }
         }
     }

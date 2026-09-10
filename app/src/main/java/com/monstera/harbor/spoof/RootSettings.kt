@@ -54,6 +54,7 @@ fun RootSettingsCard() {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Root e LSPosed · opcional", style = MaterialTheme.typography.titleMedium)
             Text("Sem NPatch. Os APKs e as assinaturas dos apps selecionados permanecem intactos.")
+            Text("O Work Profile isola dados e aplicativos, mas não oculta root, Magisk, LSPosed ou o estado do bootloader de um app que consiga verificá-los.", style = MaterialTheme.typography.bodySmall)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Habilitar opções de root", modifier = Modifier.weight(1f))
                 Switch(checked = enabled, enabled = !busy, onCheckedChange = {
@@ -81,7 +82,7 @@ fun RootSettingsCard() {
                 }
             }) { Text(if (busy) "Aguardando autorização…" else if (verified) "Verificar root novamente" else "Solicitar / verificar root") }
             Text(status, style = MaterialTheme.typography.bodySmall)
-            Text("Para spoof: instale LSPosed compatível, habilite o módulo WorkSpoof e marque os apps deste perfil no escopo. Salve a identidade e reabra os apps. Root sozinho não substitui identificadores.", style = MaterialTheme.typography.bodySmall)
+            Text("Para spoof: habilite o módulo WorkSpoof e marque os apps deste perfil no escopo. Salve a identidade e reabra os apps. Root sozinho não substitui identificadores nem impede detecção.", style = MaterialTheme.typography.bodySmall)
             Text("O estado autorizado fica salvo até você desligar esta opção. O Android/gerenciador de root ainda pode revogar a permissão; este botão não mantém um processo su aberto.", style = MaterialTheme.typography.bodySmall)
             Text("Este botão apenas executa id -u. Não instala módulos, não altera propriedades globais e não remove verificações de root dos apps.", style = MaterialTheme.typography.bodySmall)
         }
