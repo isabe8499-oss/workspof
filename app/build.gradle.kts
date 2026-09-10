@@ -18,22 +18,10 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    signingConfigs {
-        create("workspofDebug") {
-            // Stable test key so updates of this personal fork are accepted by Android.
-            // This key is deliberately for debug/test APKs only, never for production.
-            storeFile = file("workspof-debug.keystore")
-            storePassword = "workspof"
-            keyAlias = "workspof"
-            keyPassword = "workspof"
-        }
-    }
-
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-            signingConfig = signingConfigs.getByName("workspofDebug")
         }
         release {
             isMinifyEnabled = true
