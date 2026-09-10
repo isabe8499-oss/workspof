@@ -20,7 +20,7 @@ import java.util.TimeZone
 
 class WorkSpoofXposedModule : IXposedHookLoadPackage {
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
-        if (lpparam.packageName == MODULE_PACKAGE || lpparam.packageName == "$MODULE_PACKAGE.debug" || lpparam.packageName == "android") return
+        if (lpparam.packageName in MODULE_PACKAGES || lpparam.packageName == "android") return
         XposedBridge.hookAllMethods(Application::class.java, "attach", object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
                 val context = param.args.firstOrNull() as? Context ?: return
@@ -34,7 +34,7 @@ class WorkSpoofXposedModule : IXposedHookLoadPackage {
     private data class Config(val profile: SpoofProfile, val enabled: Set<String>)
 
     private fun loadConfig(context: Context): Config? {
-        val authorities = listOf("$MODULE_PACKAGE.spoof", "$MODULE_PACKAGE.debug.spoof")
+        val authorities = MODULE_PACKAGES.flatMap { listOf("$it.spoof", "$it.debug.spoof") }
         for (authority in authorities) {
             val bundle = runCatching {
                 context.contentResolver.call(Uri.parse("content://$authority"), "profile", null, null)
@@ -153,5 +153,7 @@ class WorkSpoofXposedModule : IXposedHookLoadPackage {
         get() = getResult()
         set(value) = setResult(value)
 
-    companion object { private const val MODULE_PACKAGE = "com.workspof.app" }
+    companion object {
+        private val MODULE_PACKAGES = setOf("com.workspof.app", "com.workspof.app.debug", "com.workspof.install", "com.workspof.install.debug")
+    }
 }

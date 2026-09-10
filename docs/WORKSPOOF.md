@@ -73,3 +73,10 @@ de salvar, reinicie o processo do app selecionado.
 
 Use perfis de teste e identificadores sintéticos. Não use o recurso para se
 passar por outra pessoa ou contornar controles de serviços.
+
+### APK de recuperação
+
+O APK de recuperação usa o pacote `com.workspof.install.debug` para instalar
+ao lado de uma versão antiga assinada por outro build. Depois de instalar,
+selecione esse novo pacote no escopo do LSPosed. Ele não migra automaticamente
+as preferências do pacote anterior.

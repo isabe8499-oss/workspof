@@ -8,7 +8,8 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.workspof.app"
+        // Recovery package: avoids signature conflict with earlier CI debug APKs.
+        applicationId = "com.workspof.install"
         minSdk = 29
         targetSdk = 36
         versionCode = providers.gradleProperty("harbor.versionCode").get().toInt()
@@ -17,10 +18,22 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
+    signingConfigs {
+        create("workspofDebug") {
+            // Stable test key so updates of this personal fork are accepted by Android.
+            // This key is deliberately for debug/test APKs only, never for production.
+            storeFile = file("workspof-debug.keystore")
+            storePassword = "workspof"
+            keyAlias = "workspof"
+            keyPassword = "workspof"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+            signingConfig = signingConfigs.getByName("workspofDebug")
         }
         release {
             isMinifyEnabled = true
